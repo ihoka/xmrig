@@ -2,20 +2,32 @@
 
 [env]
 MONERO_WALLET = "41y5Qg2H7YgK42nnsRUpuTLTC5th9GhwRgzqgPaVk5V4bpGd22W8XVc8Tz31dK8mLjQo67BW7HQUGRZPCEEkANyMRUYVxcb"
-
+_.source = """
+# Cross-platform hostname detection (Linux, macOS, Windows)
+if [ -n "$HOSTNAME" ]; then
+  RAW_HOST="$HOSTNAME"
+elif [ -n "$COMPUTERNAME" ]; then
+  RAW_HOST="$COMPUTERNAME"
+elif command -v hostname >/dev/null 2>&1; then
+  RAW_HOST=$(hostname)
+else
+  RAW_HOST="worker"
+fi
+export WORKER_ID=$(echo "$RAW_HOST" | tr -cd 'a-zA-Z0-9_-')
+"""
 
 [tasks.mine]
-run = "xmrig --config configs/cpu.json --user $MONERO_WALLET"
+run = "xmrig --config configs/cpu.json --user $MONERO_WALLET+$WORKER_ID"
 description = "Start CPU mining (default)"
 
 [tasks."mine:cpu"]
-run = "xmrig --config configs/cpu.json --user $MONERO_WALLET"
+run = "xmrig --config configs/cpu.json --user $MONERO_WALLET+$WORKER_ID"
 description = "Start CPU-only mining"
 
 [tasks."mine:gpu"]
-run = "xmrig --config configs/gpu.json --user $MONERO_WALLET"
+run = "xmrig --config configs/gpu.json --user $MONERO_WALLET+$WORKER_ID"
 description = "Start GPU-only mining (OpenCL/CUDA)"
 
 [tasks."mine:hybrid"]
-run = "xmrig --config configs/hybrid.json --user $MONERO_WALLET"
+run = "xmrig --config configs/hybrid.json --user $MONERO_WALLET+$WORKER_ID"
 description = "Start hybrid CPU+GPU mining"
