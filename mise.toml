@@ -5,22 +5,10 @@ XMRIG_PATH = "/Users/ihoka/crypto/xmrig-6.24.0"
 _.path = { path = ["{{env.XMRIG_PATH}}"], tools = true }
 MONERO_WALLET = "41y5Qg2H7YgK42nnsRUpuTLTC5th9GhwRgzqgPaVk5V4bpGd22W8XVc8Tz31dK8mLjQo67BW7HQUGRZPCEEkANyMRUYVxcb"
 POOL_URL = "pool.hashvault.pro:443"
-_.source = """
-# Cross-platform hostname detection (Linux, macOS, Windows)
-if [ -n "$HOSTNAME" ]; then
-  RAW_HOST="$HOSTNAME"
-elif [ -n "$COMPUTERNAME" ]; then
-  RAW_HOST="$COMPUTERNAME"
-elif command -v hostname >/dev/null 2>&1; then
-  RAW_HOST=$(hostname)
-else
-  RAW_HOST="worker"
-fi
-export WORKER_ID=$(echo "$RAW_HOST" | tr -cd 'a-zA-Z0-9_-')
-"""
+WORKER_ID = "MacBookPro"
 
 [tasks."mine:cpu"]
 run = [
-    "{{env.XMRIG_PATH}}/xmrig -o {{env.POOL_URL}} -u {{env.MONERO_WALLET}} -p $WORKER_ID",
+    "{{env.XMRIG_PATH}}/xmrig -o {{env.POOL_URL}} -u {{env.MONERO_WALLET}} -p {{env.WORKER_ID}}",
 ]
 description = "Start CPU-only mining"
