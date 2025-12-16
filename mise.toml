@@ -5,18 +5,17 @@ MONERO_WALLET = "41y5Qg2H7YgK42nnsRUpuTLTC5th9GhwRgzqgPaVk5V4bpGd22W8XVc8Tz31dK8
 
 
 [tasks.mine]
-run = [
-    "xmrig",
-    "--url",
-    "pool.hashvault.pro:443",
-    "--user",
-    "$MONERO_WALLET",
-    "--pass",
-    "x",
-    "--donate-level",
-    "1",
-    "--tls",
-    "--tls-fingerprint",
-    "420c7850e09b7c0bdcf748a7da9eb3647daf8515718f36d9ccfdd6b9ff834b14",
-]
-description = "Start mining Monero using XMRig"
+run = "xmrig --config configs/cpu.json --user $MONERO_WALLET"
+description = "Start CPU mining (default)"
+
+[tasks."mine:cpu"]
+run = "xmrig --config configs/cpu.json --user $MONERO_WALLET"
+description = "Start CPU-only mining"
+
+[tasks."mine:gpu"]
+run = "xmrig --config configs/gpu.json --user $MONERO_WALLET"
+description = "Start GPU-only mining (OpenCL/CUDA)"
+
+[tasks."mine:hybrid"]
+run = "xmrig --config configs/hybrid.json --user $MONERO_WALLET"
+description = "Start hybrid CPU+GPU mining"

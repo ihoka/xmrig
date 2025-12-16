@@ -22,14 +22,25 @@ This project uses [Mise](https://mise.jdx.dev/) for task management.
 
 | Command | Description |
 |---------|-------------|
-| `mise run mine` | Start Monero mining with configured pool and wallet |
+| `mise run mine` | Start CPU mining (default) |
+| `mise run mine:cpu` | Start CPU-only mining |
+| `mise run mine:gpu` | Start GPU-only mining (OpenCL/CUDA) |
+| `mise run mine:hybrid` | Start hybrid CPU+GPU mining |
 
 ### Mining Task Details
 
-The `mine` task executes XMRig with the following configuration:
+All mining tasks use XMRig JSON configuration files from the `configs/` directory:
 - Pool: `pool.hashvault.pro:443`
 - TLS: Enabled with fingerprint verification
 - Donate level: 1%
+
+### Configuration Profiles
+
+| Config | File | Use Case |
+|--------|------|----------|
+| CPU | `configs/cpu.json` | Standard CPU mining |
+| GPU | `configs/gpu.json` | GPU mining via OpenCL/CUDA |
+| Hybrid | `configs/hybrid.json` | Combined CPU+GPU mining |
 
 ### Prerequisites
 
@@ -52,6 +63,9 @@ The following environment variable is configured in `mise.toml`:
 | File | Purpose |
 |------|---------|
 | `mise.toml` | Task definitions and environment variables |
+| `configs/cpu.json` | XMRig CPU mining configuration |
+| `configs/gpu.json` | XMRig GPU mining configuration |
+| `configs/hybrid.json` | XMRig hybrid CPU+GPU configuration |
 | `.claude/settings.local.json` | Claude Code local settings (not committed) |
 
 ## Code Style
@@ -82,6 +96,10 @@ xmrig/
 ├── CLAUDE.md           # Symlink to AGENTS.md
 ├── README.md           # Project documentation
 ├── mise.toml           # Mise task configuration
+├── configs/            # XMRig configuration files
+│   ├── cpu.json        # CPU mining config
+│   ├── gpu.json        # GPU mining config
+│   └── hybrid.json     # Hybrid CPU+GPU config
 ├── reports/            # Project reports and documentation
 │   └── README.md       # Reports directory guide
 ├── .github/
@@ -128,7 +146,7 @@ temp/
 
 This is a configuration repository without automated tests. Validation is done through:
 
-1. **Syntax validation**: Ensure `mise.toml` has valid TOML syntax
+1. **Syntax validation**: Ensure `mise.toml` has valid TOML syntax and `configs/*.json` files have valid JSON
 2. **Dry run**: Review XMRig output before extended mining sessions
 3. **Pool connectivity**: Verify connection to mining pool
 
