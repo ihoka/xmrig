@@ -21,12 +21,6 @@ export WORKER_ID=$(echo "$RAW_HOST" | tr -cd 'a-zA-Z0-9_-')
 
 [tasks."mine:cpu"]
 run = [
-    "$XMRIG_PATH/xmrig",
-    "-o",
-    "$POOL_URL",
-    "-u",
-    "$MONERO_WALLET",
-    "-p",
-    "$WORKER_ID",
+    "{{env.XMRIG_PATH}}/xmrig -o {{env.POOL_URL}} -u {{env.MONERO_WALLET}} -p $WORKER_ID",
 ]
 description = "Start CPU-only mining"
