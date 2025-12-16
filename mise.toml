@@ -1,7 +1,10 @@
 [tools]
 
 [env]
+XMRIG_PATH = "/Users/ihoka/crypto/xmrig-6.24.0"
+_.path = { path = ["{{env.XMRIG_PATH}}"], tools = true }
 MONERO_WALLET = "41y5Qg2H7YgK42nnsRUpuTLTC5th9GhwRgzqgPaVk5V4bpGd22W8XVc8Tz31dK8mLjQo67BW7HQUGRZPCEEkANyMRUYVxcb"
+POOL_URL = "pool.hashvault.pro:443"
 _.source = """
 # Cross-platform hostname detection (Linux, macOS, Windows)
 if [ -n "$HOSTNAME" ]; then
@@ -16,18 +19,14 @@ fi
 export WORKER_ID=$(echo "$RAW_HOST" | tr -cd 'a-zA-Z0-9_-')
 """
 
-[tasks.mine]
-run = "xmrig --config configs/cpu.json --user $MONERO_WALLET+$WORKER_ID"
-description = "Start CPU mining (default)"
-
 [tasks."mine:cpu"]
-run = "xmrig --config configs/cpu.json --user $MONERO_WALLET+$WORKER_ID"
+run = [
+    "$XMRIG_PATH/xmrig",
+    "-o",
+    "$POOL_URL",
+    "-u",
+    "$MONERO_WALLET",
+    "-p",
+    "$WORKER_ID",
+]
 description = "Start CPU-only mining"
-
-[tasks."mine:gpu"]
-run = "xmrig --config configs/gpu.json --user $MONERO_WALLET+$WORKER_ID"
-description = "Start GPU-only mining (OpenCL/CUDA)"
-
-[tasks."mine:hybrid"]
-run = "xmrig --config configs/hybrid.json --user $MONERO_WALLET+$WORKER_ID"
-description = "Start hybrid CPU+GPU mining"
